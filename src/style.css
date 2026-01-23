@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --culinary-bg: #fffbf7;
+}
+
+.dark {
+  --culinary-bg: #1a1a1a;
+}
+
+body {
+  @apply bg-culinary-bg text-slate-900 dark:text-slate-100 transition-colors duration-300 antialiased;
+  margin: 0;
+  display: block;
+  min-height: 100vh;
+}
+
+.font-display {
+  font-family: 'Playfair Display', serif;
+}
+
+#app {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.glass {
+  @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200/50 dark:border-slate-800/50;
+}
+
+.recipe-card {
+  @apply glass rounded-[2rem] overflow-hidden hover:shadow-2xl hover:shadow-culinary-primary/10 transition-all duration-500;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-culinary-primary/20 rounded-full hover:bg-culinary-primary/40;
+}
