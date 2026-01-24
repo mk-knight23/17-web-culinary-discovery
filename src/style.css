@@ -4,10 +4,9 @@
 
 :root {
   --culinary-bg: #fffbf7;
-}
-
-.dark {
-  --culinary-bg: #1a1a1a;
+  --app-bg-light: #fffbf7;
+  --app-bg-dark: #1a1a1a;
+  color-scheme: dark;
 }
 
 body {
@@ -15,6 +14,26 @@ body {
   margin: 0;
   display: block;
   min-height: 100vh;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+.light {
+  color-scheme: light;
+}
+
+.dark body {
+  @apply bg-culinary-dark text-white;
+}
+
+.light body {
+  @apply bg-culinary-bg text-slate-900;
+}
+
+kbd {
+  @apply px-2 py-1 text-xs font-mono bg-slate-200 dark:bg-slate-700 rounded;
 }
 
 .font-display {

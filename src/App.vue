@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watchEffect } from 'vue'
 import { useRecipeStore } from './stores/recipeStore'
+import { useSettingsStore } from './stores/settings'
+import { useStatsStore } from './stores/stats'
+import { useAudio } from './composables/useAudio'
+import { useKeyboardControls } from './composables/useKeyboardControls'
+import SettingsPanel from './components/ui/SettingsPanel.vue'
 import { 
   Search, 
   Heart, 
@@ -13,32 +18,55 @@ import {
   Sun,
   X,
   PlayCircle,
-  ExternalLink
+  ExternalLink,
+  Settings
 } from 'lucide-vue-next'
 
 const store = useRecipeStore()
-const isDarkMode = ref(true)
+const settingsStore = useSettingsStore()
+const statsStore = useStatsStore()
+const audio = useAudio()
+const { lastAction } = useKeyboardControls()
+
 const showModal = ref(false)
 const selectedRecipe = ref<any>(null)
 
 onMounted(() => {
   store.fetchCategories()
   store.searchRecipes('')
+  statsStore.recordSearch()
+})
+
+watchEffect(() => {
+  if (lastAction.value === 'help') {
+    settingsStore.toggleHelp()
+  }
+  if (lastAction.value === 'close' && showModal.value) {
+    showModal.value = false
+  }
 })
 
 const toggleTheme = () => {
-  isDarkMode.value = !isDarkMode.value
-  document.documentElement.classList.toggle('dark')
+  audio.playClick()
+  const nextTheme = settingsStore.theme === 'dark' ? 'light' : settingsStore.theme === 'light' ? 'system' : 'dark'
+  settingsStore.setTheme(nextTheme)
+}
+
+const openSettings = () => {
+  audio.playClick()
+  settingsStore.toggleHelp()
 }
 
 const openRecipe = async (recipe: any) => {
-  // The filter API only returns basic info, need full details
+  statsStore.recordRecipeView()
   try {
     const { data } = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${recipe.idMeal}`).then(res => res.json())
     selectedRecipe.value = data.meals[0]
     showModal.value = true
+    audio.playSuccess()
   } catch (err) {
     console.error(err)
+    audio.playError()
   }
 }
 
@@ -53,10 +81,16 @@ const getIngredients = (recipe: any) => {
   }
   return ingredients
 }
+
+const onSearch = () => {
+  audio.playClick()
+  store.searchRecipes(store.searchQuery)
+  statsStore.recordSearch()
+}
 </script>
 
 <template>
-  <div class="min-h-screen transition-colors duration-500" :class="{ 'dark': isDarkMode }">
+  <div class="min-h-screen transition-colors duration-500" :class="{ 'dark': settingsStore.isDarkMode, 'light': !settingsStore.isDarkMode }">
     <!-- Header -->
     <header class="sticky top-0 z-40 glass border-b border-slate-200 dark:border-slate-800 px-6 py-4">
       <div class="max-w-7xl mx-auto flex justify-between items-center">
@@ -64,13 +98,16 @@ const getIngredients = (recipe: any) => {
           <div class="bg-culinary-primary p-2 rounded-2xl rotate-3 shadow-lg shadow-culinary-primary/20">
             <ChefHat class="text-white" :size="24" />
           </div>
-          <h1 class="text-2xl font-display font-black tracking-tighter">Culinara<span class="text-culinary-primary">AI</span></h1>
+          <h1 class="text-2xl font-display font-black tracking-tighter dark:text-white">Culinara<span class="text-culinary-primary">AI</span></h1>
         </div>
 
         <div class="flex items-center space-x-4">
+          <button @click="openSettings" class="p-2.5 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <Settings class="text-slate-600 dark:text-slate-300" :size="20" />
+          </button>
           <button @click="toggleTheme" class="p-2.5 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-            <Sun v-if="isDarkMode" :size="20" />
-            <Moon v-else :size="20" />
+            <Sun v-if="settingsStore.isDarkMode" :size="20" class="text-amber-400" />
+            <Moon v-else :size="20" class="text-blue-600" />
           </button>
           <div class="hidden sm:flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-700">
             <Heart class="text-culinary-primary fill-culinary-primary" :size="16" />
@@ -96,12 +133,12 @@ const getIngredients = (recipe: any) => {
           <input 
             type="text" 
             v-model="store.searchQuery"
-            @keyup.enter="store.searchRecipes(store.searchQuery)"
+            @keyup.enter="onSearch"
             placeholder="Search by ingredient, dish or cuisine..."
             class="w-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-[2.5rem] pl-16 pr-8 py-6 text-xl outline-none focus:border-culinary-primary focus:ring-8 focus:ring-culinary-primary/5 transition-all shadow-2xl shadow-slate-200/50 dark:shadow-none"
           >
           <button 
-            @click="store.searchRecipes(store.searchQuery)"
+            @click="onSearch"
             class="absolute right-3 top-3 bottom-3 bg-culinary-primary hover:bg-culinary-secondary text-white px-8 rounded-[2rem] font-black uppercase tracking-widest text-xs transition-all active:scale-95"
           >
             Find
@@ -270,6 +307,8 @@ const getIngredients = (recipe: any) => {
         </div>
       </div>
     </div>
+
+    <SettingsPanel />
   </div>
 </template>
 
