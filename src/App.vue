@@ -65,7 +65,6 @@ const openRecipe = async (recipe: any) => {
     showModal.value = true
     audio.playSuccess()
   } catch (err) {
-    console.error(err)
     audio.playError()
   }
 }
@@ -90,26 +89,26 @@ const onSearch = () => {
 </script>
 
 <template>
-  <div class="min-h-screen transition-colors duration-500" :class="{ 'dark': settingsStore.isDarkMode, 'light': !settingsStore.isDarkMode }">
+  <div class="min-h-screen transition-colors duration-500" :class="{ 'dark': settingsStore.isDarkMode, 'light': !settingsStore.isDarkMode }" role="application" aria-label="Culinara Recipe Finder">
     <!-- Header -->
-    <header class="sticky top-0 z-40 glass border-b border-slate-200 dark:border-slate-800 px-6 py-4">
+    <header class="sticky top-0 z-40 glass border-b border-slate-200 dark:border-slate-800 px-6 py-4" role="banner">
       <div class="max-w-7xl mx-auto flex justify-between items-center">
         <div class="flex items-center space-x-3">
-          <div class="bg-culinary-primary p-2 rounded-2xl rotate-3 shadow-lg shadow-culinary-primary/20">
+          <div class="bg-culinary-primary p-2 rounded-2xl rotate-3 shadow-lg shadow-culinary-primary/20" aria-hidden="true">
             <ChefHat class="text-white" :size="24" />
           </div>
           <h1 class="text-2xl font-display font-black tracking-tighter dark:text-white">Culinara<span class="text-culinary-primary">AI</span></h1>
         </div>
 
         <div class="flex items-center space-x-4">
-          <button @click="openSettings" class="p-2.5 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+          <button @click="openSettings" class="p-2.5 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" aria-label="Open settings">
             <Settings class="text-slate-600 dark:text-slate-300" :size="20" />
           </button>
-          <button @click="toggleTheme" class="p-2.5 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+          <button @click="toggleTheme" class="p-2.5 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" :aria-label="settingsStore.isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'">
             <Sun v-if="settingsStore.isDarkMode" :size="20" class="text-amber-400" />
             <Moon v-else :size="20" class="text-blue-600" />
           </button>
-          <div class="hidden sm:flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <div class="hidden sm:flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-700" role="status" aria-label="{{ store.favorites.length }} saved recipes">
             <Heart class="text-culinary-primary fill-culinary-primary" :size="16" />
             <span class="text-xs font-black uppercase tracking-widest">{{ store.favorites.length }} Saved</span>
           </div>
@@ -117,11 +116,11 @@ const onSearch = () => {
       </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-6 py-12 space-y-16">
+    <main class="max-w-7xl mx-auto px-6 py-12 space-y-16" role="main">
       <!-- Search & Hero -->
-      <section class="text-center space-y-8 max-w-3xl mx-auto">
+      <section class="text-center space-y-8 max-w-3xl mx-auto" aria-labelledby="hero-heading">
         <div class="space-y-4">
-          <h2 class="text-5xl md:text-7xl font-display font-black leading-tight tracking-tight">
+          <h2 id="hero-heading" class="text-5xl md:text-7xl font-display font-black leading-tight tracking-tight">
             Discover Your Next <br />
             <span class="text-culinary-primary italic underline decoration-8 decoration-culinary-primary/10">Masterpiece</span>
           </h2>
@@ -129,30 +128,33 @@ const onSearch = () => {
         </div>
 
         <div class="relative group">
-          <Search class="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-culinary-primary transition-colors" :size="24" />
-          <input 
-            type="text" 
+          <Search class="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-culinary-primary transition-colors" :size="24" aria-hidden="true" />
+          <input
+            type="text"
             v-model="store.searchQuery"
             @keyup.enter="onSearch"
             placeholder="Search by ingredient, dish or cuisine..."
             class="w-full bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-[2.5rem] pl-16 pr-8 py-6 text-xl outline-none focus:border-culinary-primary focus:ring-8 focus:ring-culinary-primary/5 transition-all shadow-2xl shadow-slate-200/50 dark:shadow-none"
+            aria-label="Search recipes"
           >
-          <button 
+          <button
             @click="onSearch"
             class="absolute right-3 top-3 bottom-3 bg-culinary-primary hover:bg-culinary-secondary text-white px-8 rounded-[2rem] font-black uppercase tracking-widest text-xs transition-all active:scale-95"
+            aria-label="Search"
           >
             Find
           </button>
         </div>
 
         <!-- Categories -->
-        <div class="flex flex-wrap justify-center gap-3">
-          <button 
-            v-for="cat in store.categories.slice(0, 8)" 
+        <div class="flex flex-wrap justify-center gap-3" role="group" aria-label="Recipe categories">
+          <button
+            v-for="cat in store.categories.slice(0, 8)"
             :key="cat"
             @click="store.fetchByCategory(cat)"
             class="px-6 py-2.5 rounded-full text-sm font-bold transition-all"
             :class="store.selectedCategory === cat ? 'bg-culinary-primary text-white shadow-lg shadow-culinary-primary/30' : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 hover:border-culinary-primary'"
+            :aria-pressed="store.selectedCategory === cat"
           >
             {{ cat }}
           </button>
@@ -160,13 +162,16 @@ const onSearch = () => {
       </section>
 
       <!-- Recipe Grid -->
-      <section v-if="!store.loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-        <div v-for="recipe in store.recipes" :key="recipe.idMeal" class="recipe-card group">
+      <section v-if="!store.loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10" aria-labelledby="recipes-heading">
+        <h2 id="recipes-heading" class="sr-only">Recipe Results</h2>
+        <article v-for="recipe in store.recipes" :key="recipe.idMeal" class="recipe-card group">
           <div class="relative aspect-video overflow-hidden">
-            <img :src="recipe.strMealThumb" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="">
-            <button 
+            <img :src="recipe.strMealThumb" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" :alt="recipe.strMeal">
+            <button
               @click.stop="store.toggleFavorite(recipe.idMeal)"
               class="absolute top-4 right-4 p-3 rounded-2xl glass hover:bg-white transition-colors"
+              :aria-label="store.favorites.includes(recipe.idMeal) ? 'Remove from favorites' : 'Add to favorites'"
+              :aria-pressed="store.favorites.includes(recipe.idMeal)"
             >
               <Heart :class="{ 'text-red-500 fill-red-500': store.favorites.includes(recipe.idMeal) }" :size="20" />
             </button>
@@ -182,12 +187,12 @@ const onSearch = () => {
               <div class="flex items-center space-x-4 text-slate-400">
                 <span class="flex items-center gap-1 text-xs font-bold uppercase tracking-tighter"><MapPin :size="14" /> {{ recipe.strArea || 'Global' }}</span>
               </div>
-              <button @click="openRecipe(recipe)" class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800 text-culinary-primary hover:bg-culinary-primary hover:text-white transition-all">
+              <button @click="openRecipe(recipe)" class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800 text-culinary-primary hover:bg-culinary-primary hover:text-white transition-all" :aria-label="`View recipe details for ${recipe.strMeal}`">
                 <ArrowRight :size="20" />
               </button>
             </div>
           </div>
-        </div>
+        </article>
       </section>
 
       <!-- Loading State -->
@@ -206,7 +211,7 @@ const onSearch = () => {
     </main>
 
     <!-- Footer -->
-    <footer class="mt-48 pb-12 border-t border-slate-200 dark:border-slate-800 pt-20">
+    <footer class="mt-48 pb-12 border-t border-slate-200 dark:border-slate-800 pt-20" role="contentinfo">
       <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
         <div class="space-y-6">
           <div class="flex items-center space-x-2">
@@ -251,10 +256,10 @@ const onSearch = () => {
     </footer>
 
     <!-- Recipe Detail Modal -->
-    <div v-if="showModal && selectedRecipe" class="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8">
-      <div @click="showModal = false" class="absolute inset-0 bg-slate-950/80 backdrop-blur-md"></div>
-      <div class="relative glass w-full max-w-5xl rounded-[3rem] overflow-hidden flex flex-col md:flex-row h-full max-h-[85vh]">
-        <button @click="showModal = false" class="absolute top-6 right-6 z-10 p-3 bg-white dark:bg-slate-800 rounded-2xl shadow-xl hover:scale-110 transition-transform">
+    <div v-if="showModal && selectedRecipe" class="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8" role="dialog" aria-modal="true" :aria-labelledby="`recipe-${selectedRecipe.idMeal}-title`">
+      <div @click="showModal = false" class="absolute inset-0 bg-slate-950/80 backdrop-blur-md" aria-hidden="true"></div>
+      <div class="relative glass w-full max-w-5xl rounded-[3rem] overflow-hidden flex flex-col md:flex-row h-full max-h-[85vh]" role="document">
+        <button @click="showModal = false" class="absolute top-6 right-6 z-10 p-3 bg-white dark:bg-slate-800 rounded-2xl shadow-xl hover:scale-110 transition-transform" aria-label="Close recipe details">
           <X :size="20" />
         </button>
 
@@ -266,7 +271,7 @@ const onSearch = () => {
               <span class="px-3 py-1 bg-culinary-primary text-[10px] font-black uppercase rounded-lg">{{ selectedRecipe.strCategory }}</span>
               <span class="px-3 py-1 bg-white/20 backdrop-blur-md text-[10px] font-black uppercase rounded-lg border border-white/10">{{ selectedRecipe.strArea }}</span>
             </div>
-            <h2 class="text-4xl font-display font-black leading-tight">{{ selectedRecipe.strMeal }}</h2>
+            <h2 :id="`recipe-${selectedRecipe.idMeal}-title`" class="text-4xl font-display font-black leading-tight">{{ selectedRecipe.strMeal }}</h2>
           </div>
         </div>
 

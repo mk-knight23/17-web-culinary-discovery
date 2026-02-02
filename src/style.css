@@ -1,67 +1,59 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-culinary-primary: #f59e0b;
+  --color-culinary-secondary: #ea580c;
+  --color-culinary-accent: #10b981;
+  --color-culinary-bg: #fffbf7;
+  --color-culinary-dark: #1a1a1a;
+
+  --font-display: "Playfair Display", serif;
+}
 
 :root {
   --culinary-bg: #fffbf7;
   --app-bg-light: #fffbf7;
   --app-bg-dark: #1a1a1a;
-  color-scheme: dark;
+}
+
+html {
+  @apply scroll-smooth;
 }
 
 body {
   @apply bg-culinary-bg text-slate-900 dark:text-slate-100 transition-colors duration-300 antialiased;
   margin: 0;
-  display: block;
   min-height: 100vh;
-}
-
-.dark {
-  color-scheme: dark;
-}
-
-.light {
-  color-scheme: light;
 }
 
 .dark body {
   @apply bg-culinary-dark text-white;
 }
 
-.light body {
-  @apply bg-culinary-bg text-slate-900;
+@utility glass {
+  @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200/50 dark:border-slate-800/50;
 }
 
-kbd {
-  @apply px-2 py-1 text-xs font-mono bg-slate-200 dark:bg-slate-700 rounded;
+@utility recipe-card {
+  @apply glass rounded-[2rem] overflow-hidden hover:shadow-2xl hover:shadow-culinary-primary/10 transition-all duration-500;
 }
 
-.font-display {
-  font-family: 'Playfair Display', serif;
+@utility custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    @apply bg-culinary-primary/20 rounded-full hover:bg-culinary-primary/40;
+  }
 }
 
 #app {
   max-width: none;
   margin: 0;
   padding: 0;
-}
-
-.glass {
-  @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-slate-200/50 dark:border-slate-800/50;
-}
-
-.recipe-card {
-  @apply glass rounded-[2rem] overflow-hidden hover:shadow-2xl hover:shadow-culinary-primary/10 transition-all duration-500;
-}
-
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  @apply bg-transparent;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-culinary-primary/20 rounded-full hover:bg-culinary-primary/40;
 }
