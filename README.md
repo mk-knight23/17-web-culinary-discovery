@@ -1,4 +1,4 @@
-# Culinara Recipe Finder
+# Web Culinary Discovery
 
 ✨ A modern, interactive recipe discovery application built with Vue 3, featuring real-time search, category filtering, and recipe favorites.
 
