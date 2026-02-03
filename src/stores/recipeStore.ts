@@ -22,8 +22,8 @@ export const useRecipeStore = defineStore('recipe', {
       try {
         const { data } = await axios.get('https://www.themealdb.com/api/json/v1/1/list.php?c=list')
         this.categories = ['All', ...data.meals.map((c: any) => c.strCategory)]
-      } catch (error) {
-        console.error('Failed to fetch categories', error)
+      } catch {
+        // Silently handle error
       }
     },
 
@@ -33,8 +33,8 @@ export const useRecipeStore = defineStore('recipe', {
       try {
         const { data } = await axios.get(`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`)
         this.recipes = data.meals || []
-      } catch (error) {
-        console.error('Failed to search recipes', error)
+      } catch {
+        // Silently handle error
       } finally {
         this.loading = false
       }
@@ -48,8 +48,8 @@ export const useRecipeStore = defineStore('recipe', {
       try {
         const { data } = await axios.get(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`)
         this.recipes = data.meals || []
-      } catch (error) {
-        console.error('Failed to fetch by category', error)
+      } catch {
+        // Silently handle error
       } finally {
         this.loading = false
       }

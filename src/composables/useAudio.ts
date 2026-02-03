@@ -8,7 +8,7 @@ function initAudioContext(): void {
     try {
       audioContext = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
     } catch {
-      console.warn('Audio context not supported');
+      // Audio not supported, ignore
     }
   }
 }
@@ -32,7 +32,7 @@ function playTone(frequency: number, duration: number, type: OscillatorType = 's
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + duration);
   } catch {
-    console.warn('Audio playback failed');
+    // Audio playback failed, ignore
   }
 }
 

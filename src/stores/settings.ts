@@ -25,8 +25,8 @@ function loadSettings(): Settings {
     if (stored) {
       return { ...defaultSettings, ...JSON.parse(stored) };
     }
-  } catch (e) {
-    console.warn('Failed to load settings');
+  } catch {
+    // Silently handle error
   }
   return defaultSettings;
 }
@@ -80,8 +80,8 @@ export const useSettingsStore = defineStore('settings', () => {
         theme: theme.value,
         reducedMotion: reducedMotion.value,
       }));
-    } catch (e) {
-      console.warn('Failed to save settings');
+    } catch {
+      // Silently handle error
     }
   }
 
