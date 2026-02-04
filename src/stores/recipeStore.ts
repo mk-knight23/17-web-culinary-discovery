@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 import type { RecipeState } from '@/types/recipe'
 
+const API_BASE = import.meta.env.VITE_MEALDB_API_BASE || 'https://www.themealdb.com/api/json/v1/1'
+
 export const useRecipeStore = defineStore('recipe', {
   state: (): RecipeState => ({
     recipes: [],
@@ -20,7 +22,7 @@ export const useRecipeStore = defineStore('recipe', {
   actions: {
     async fetchCategories() {
       try {
-        const { data } = await axios.get('https://www.themealdb.com/api/json/v1/1/list.php?c=list')
+        const { data } = await axios.get(`${API_BASE}/list.php?c=list`)
         this.categories = ['All', ...data.meals.map((c: any) => c.strCategory)]
       } catch {
         // Silently handle error
@@ -31,7 +33,7 @@ export const useRecipeStore = defineStore('recipe', {
       this.loading = true
       this.searchQuery = query
       try {
-        const { data } = await axios.get(`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`)
+        const { data } = await axios.get(`${API_BASE}/search.php?s=${query}`)
         this.recipes = data.meals || []
       } catch {
         // Silently handle error
@@ -42,11 +44,11 @@ export const useRecipeStore = defineStore('recipe', {
 
     async fetchByCategory(category: string) {
       if (category === 'All') return this.searchRecipes('')
-      
+
       this.loading = true
       this.selectedCategory = category
       try {
-        const { data } = await axios.get(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`)
+        const { data } = await axios.get(`${API_BASE}/filter.php?c=${category}`)
         this.recipes = data.meals || []
       } catch {
         // Silently handle error
@@ -58,9 +60,9 @@ export const useRecipeStore = defineStore('recipe', {
     toggleFavorite(id: string) {
       const index = this.favorites.indexOf(id)
       if (index > -1) {
-        this.favorites.splice(index, 1)
+        this.favorites = this.favorites.filter(favId => favId !== id)
       } else {
-        this.favorites.push(id)
+        this.favorites = [...this.favorites, id]
       }
       localStorage.setItem('recipe-favorites', JSON.stringify(this.favorites))
     }
