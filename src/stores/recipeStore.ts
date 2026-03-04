@@ -60,11 +60,11 @@ export const useRecipeStore = defineStore('recipe', {
     toggleFavorite(id: string) {
       const index = this.favorites.indexOf(id)
       if (index > -1) {
-        this.favorites = this.favorites.filter(favId => favId !== id)
+        this.favorites = this.favorites.filter((favId) => favId !== id)
       } else {
         this.favorites = [...this.favorites, id]
       }
       localStorage.setItem('recipe-favorites', JSON.stringify(this.favorites))
-    }
-  }
+    },
+  },
 })

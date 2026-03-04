@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   --color-culinary-primary: #f59e0b;
@@ -7,7 +7,7 @@
   --color-culinary-bg: #fffbf7;
   --color-culinary-dark: #1a1a1a;
 
-  --font-display: "Playfair Display", serif;
+  --font-display: 'Playfair Display', serif;
 }
 
 :root {

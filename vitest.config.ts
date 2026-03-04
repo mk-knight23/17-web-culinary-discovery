@@ -6,15 +6,6 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: './src/test/setup.ts',
-    css: true,
-    typecheck: {
-      tsconfig: './tsconfig.json',
-    },
-  },
-  resolve: {
-    alias: {
-      '@': '/src',
-    },
+    setupFiles: ['./src/__tests__/setup.ts'],
   },
 })
