@@ -6,14 +6,15 @@
   "scripts": {
     "production": "npm run build && npm start",
     "dev": "vite",
-    "build": "vue-tsc -b && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint . --ext .vue,.ts,.tsx",
     "lint:fix": "eslint . --ext .vue,.ts,.tsx --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "typecheck": "vue-tsc -b && vite build"
   },
   "dependencies": {
     "@vueuse/core": "^14.1.0",
@@ -39,7 +40,6 @@
     "vite": "^7.2.4",
     "vitest": "^4.0.18",
     "vue-tsc": "^3.1.4",
-    "": "testing-library/vue",
     "eslint-plugin-vue": "^9",
     "prettier": "^3"
   }
